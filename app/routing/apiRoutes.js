@@ -11,12 +11,41 @@ module.exports = function(app) {
     
     //A POST routes /api/friends. This will be used to handle incoming survey results. 
     app.post("/api/friends", function(req, res) {
+
         let newFriend = req.body;
-        friends.push(newFriend);
-    });
-    //This route will also be used to handle the compatibility logic.
-    // app.post("/api/friends", function(req, res) {
-    //     // res.write(); // This will write new friends to the listAKAarray
+        let newFriendScores = newFriend.scores;
+
+        let bestMatch = {
+            name: "",
+            quote: "",
+            difference: Infinity // numeric value that represents positive infinity
+        }
+
+        var totalDifference;
+
+        for (let i = 0; i < friends.length; i++) {
+            let friendData = friends[i];
+            totalDifference = 0; //in each index of the friends array totalDifference equals "0"
+
+            console.log(friendData.name);
+
+            for (let j = 0; j < friendData.scores.length; j++) {
+                const currentFriendScores = friendData.scores[j];
+                var currentUserScore = newFriendScores[j];
+
+                totalDifference = totalDifference + (Math.abs(parseInt(currentUserScore) - parseInt(currentFriendScores)));
+            }
+
+            if (totalDifference <= bestMatch.difference) {
+                bestMatch.name = friendData.name;
+                bestMatch.quote = friendData.lifeQuote;
+                bestMatch.difference = totalDifference;
+            }
+        }
         
-    // });
+        friends.push(newFriend);
+
+        //returns JSON with the user's bestMatch and is used in the HTML
+        res.json(bestMatch);
+    });
 };

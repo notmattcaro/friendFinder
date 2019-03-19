@@ -11,9 +11,8 @@
 </head>
 <body>
     <div id="survey-welcome" class="center orange lighten-1">
-        <h1 id="survey-title" class="lobster">friendly Questions</h1>
+        <h1 id="survey-title" class="lobster">Friendly Questions</h1>
     </div>
-
     <div class="container ">
         <div id="main-row" class="row">
             <div class="col s12">
@@ -43,11 +42,16 @@
                         </div>
                         <div class="col s1 m2 l2"></div>
                 </div>
+                <div class="row center">
+                    <div class="cols 12">
+                        <h5 class="raleway center">Less likely 1 - Most likely 5</h5>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col s1 m2 l2"></div>
                     <div class="col s10 m8 l8">
-                        <h5 class="lobster">Question 1</h5>
-                        <p class="raleway">The chance that you'll wake up and wander off somewhere.</p>
+                        <h5 class="lobster">Prompt 1</h5>
+                        <p class="raleway">What are the chances that you'll wake up and wander off somewhere?</p>
 
                         <!-- input fields -->
                             <select id="question-1" action="#">
@@ -79,8 +83,8 @@
                 <div class="row">
                     <div class="col s1 m2 l2"></div>
                     <div class="col s10 m8 l8">
-                        <h5 class="lobster">Question 2</h5>
-                        <p class="raleway">The chance that you'll wake up and wander off somewhere.</p>
+                        <h5 class="lobster">Prompt 2</h5>
+                        <p class="raleway">How likely are you act before you think?</p>
      
                         <!-- input fields -->
                             <form id="question-2" action="#">
@@ -112,8 +116,8 @@
                 <div class="row">
                     <div class="col s1 m2 l2"></div>
                     <div class="col s10 m8 l8">
-                        <h5 class="lobster">Question 3</h5>
-                        <p class="raleway">The chance that you'll wake up and wander off somewhere.</p>
+                        <h5 class="lobster">Prompt 3</h5>
+                        <p class="raleway">Are you more likely to listen than to need to be heard?</p>
             
                         <!-- input fields -->
                             <form id="question-3" action="#">
@@ -145,8 +149,8 @@
                 <div class="row">
                     <div class="col s1 m2 l2"></div>
                     <div class="col s10 m8 l8">
-                        <h5 class="lobster">Question 4</h5>
-                        <p class="raleway">The chance that you'll wake up and wander off somewhere.</p>
+                        <h5 class="lobster">Prompt 4</h5>
+                        <p class="raleway">Are you the type of person who'd rather enjoy a good show or play a boardgame?</p>
               
                         <!-- input fields -->
                             <form id="question-4" action="#">
@@ -178,8 +182,8 @@
                 <div class="row">
                     <div class="col s1 m2 l2"></div>
                     <div class="col s10 m8 l8">
-                        <h5 class="lobster">Question 5</h5>
-                        <p class="raleway">The chance that you'll wake up and wander off somewhere.</p>
+                        <h5 class="lobster">Prompt 5</h5>
+                        <p class="raleway">To what degree would rate yourself a strategic person?</p>
            
                         <!-- input fields -->
                             <form id="question-5" action="#">
@@ -210,16 +214,35 @@
                 </div>
                 <div class="row">
                     <div class="col s12 center">
-                        <a id="submit-friend" href="./survey.html" class="waves-effect waves-light btn"><span class="raleway">begin</span></a>
+                        <a id="submit-friend" href="#modal1" class="waves-effect waves-light btn modal-trigger"><span class="raleway">begin</span></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal Trigger -->
+    <!-- <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a> -->
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="row">
+            <div class="modal-content col s12">
+                <h4 class="center lobster">New Bestie</h4>
+                <h5 id="match-name" class="raleway center"></h5>
+                <p class="center"><em id="match-quote" class="raleway center"></em></p>
+            </div>
+            <div class="col s12 center">
+                <a href="#!" class="modal-close waves-effect waves-green btn center raleway">Sweetness!</a>
+            </div>
+        </div>
+    </div>
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script>
 $(document).ready(function() {
 
+    //returns radio button values
     function isRadioAnswer(x) {
         let isAnswer = document.getElementsByName(x);
         if (isAnswer[0].checked) {
@@ -239,6 +262,21 @@ $(document).ready(function() {
     $("#submit-friend").on("click", function() {
         event.preventDefault();
 
+        let isRadio;
+        function arrayChecker(array) {
+            for (let i = 0; i < array.length; i++) {
+                const myArray = array[i];
+                if (myArray === undefined) {
+                    isRadio = false;
+                    return isRadio;
+                } else {
+                    isRadio = true;
+                }
+            }
+            return isRadio;
+        }
+
+        //creates new friend object
         let newFriend = {
             name: $("#full_name").val().trim(),
             lifeQuote: $("#life_quote").val().trim(),
@@ -251,12 +289,30 @@ $(document).ready(function() {
             ]
         }
         console.log(newFriend);
+        arrayChecker(newFriend.scores);
+        console.log("isRadio var equals: " + isRadio);
         
-        $.post("http://localhost:6969/api/friends", newFriend, function() {
-            console.log(newFriend);
-        });
+        //controls post of new friend object
+        if (newFriend.name === "" || undefined) {
+            alert("Please enter a valid name.");
+            return;
+        } else if (newFriend.lifeQuote === "" || undefined) {
+            alert("Please enter a valid quote.");
+            return;
+        } else if (isRadio === false) {
+            alert("Please select all values");
+            return;
+        } else {
 
-    })
+            $.post("/api/friends", newFriend, function(myBestMatch) {
+                $("#match-name").text(myBestMatch.name);
+                $("#match-quote").text(myBestMatch.quote); 
+            });
+            //initialize materializecss modal
+            $('.modal').modal();   
+            return;
+        }
+    });
 });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
