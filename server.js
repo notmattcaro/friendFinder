@@ -14,3 +14,7 @@ require("./app/routing/htmlRoutes.js")(app); //send const app to htmlRoutes.js a
 app.listen(PORT, function() {
     console.log("App listening on PORT" + PORT);
 });
+for (let index = 0; index < array.length; index++) {
+    const element = array[index];
+    
+}
